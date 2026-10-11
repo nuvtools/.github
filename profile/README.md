@@ -1,66 +1,130 @@
-## Hi there 👋
+# Nuv Tools
 
-Here you will find the libraries of the Nuv Tools framework, which aim to assist in the development of cross-platform .NET applications.
+Open-source building blocks for .NET applications: a family of small, focused NuGet packages for
+data access, security, notifications, payments, reports and storage, plus the Azure templates used
+to ship what is built with them.
 
-### Nuv Tools Common Library
-Common library for Web, Desktop and Mobile (MAUI) applications.
+[Website](https://nuvtools.com) · [Documentation](https://docs.nuvtools.com) · [NuGet](https://www.nuget.org/profiles/nuvtools) · [Contact](mailto:technology@nuvtools.com)
 
-### NuvTools.Data
-Library containg helpers to manipulate data.
+## What is here
 
-### NuvTools.Data.EntityFrameworkCore
-Library containg helpers to manipulate data using Entity Framework Core.
+| | |
+|---|---|
+| **[Nuv Tools Framework](#nuv-tools-framework)** | 39 NuGet packages in 12 repositories, for .NET 8, 9 and 10 |
+| **[Azure templates](#azure-templates)** | Bicep modules and GitHub Actions workflows for provisioning and deploying on Azure |
+| **[Data Provider SDK](#data-provider-sdk)** | The .NET client for APIs published on the Nuv Tools Data Provider marketplace |
 
-### NuvTools.Data.EntityFrameworkCore.SqlServer
-Library containg helpers to manipulate data using Entity Framework Core for SQL Server.
+The packages and the templates are MIT-licensed.
 
-### NuvTools.Data.EntityFrameworkCore.PostgreSQL
-Library containg helpers to manipulate data using Entity Framework Core for PostgreSQL.
+## Nuv Tools Framework
 
-### Nuv Tools Resources for .NET
-Contains the common resources for using in the libraries and projects of Nuv Tools.
+Each repository is one area and publishes its packages independently, so an application takes only
+the ones it needs.
 
-### NuvTools.AspNetCore
-Common library with helpers to use with ASP.NET Aplications.
+| Area | Repository | What it gives you |
+|---|---|---|
+| Foundation | [nuvtools-common](https://github.com/nuvtools/nuvtools-common) | Cross-platform utilities for Web, Desktop and Mobile (MAUI) |
+| | [nuvtools-resources](https://github.com/nuvtools/nuvtools-resources) | English and Portuguese localization resources: actions, fields and message templates |
+| | [nuvtools-validation](https://github.com/nuvtools/nuvtools-validation) | Validators and data annotations, including Brazilian documents (CPF, CNPJ, phone, CEP) |
+| Data | [nuvtools-data](https://github.com/nuvtools/nuvtools-data) | Paging, sorting and filtering, and Entity Framework Core helpers for SQL Server and PostgreSQL |
+| Web | [nuvtools-aspnetcore](https://github.com/nuvtools/nuvtools-aspnetcore) | ASP.NET Core, Blazor and MudBlazor helpers |
+| Security | [nuvtools-security](https://github.com/nuvtools/nuvtools-security) | JWT, cryptography, CAPTCHA, and facial and certificate verification |
+| | [nuvtools-security-identity](https://github.com/nuvtools/nuvtools-security-identity) | Permission-based authorization and user management on ASP.NET Identity |
+| Integration | [nuvtools-notification](https://github.com/nuvtools/nuvtools-notification) | E-mail, messaging and real-time notifications |
+| | [nuvtools-payment](https://github.com/nuvtools/nuvtools-payment) | Provider-neutral payment contracts, with Stripe and Omie clients |
+| | [nuvtools-storage](https://github.com/nuvtools/nuvtools-storage) | File storage abstractions, with Azure Blob Storage |
+| | [nuvtools-blockchain](https://github.com/nuvtools/nuvtools-blockchain) | Tamper-evident ledger abstractions, with Azure Confidential Ledger |
+| Reporting | [nuvtools-report](https://github.com/nuvtools/nuvtools-report) | PDF, Excel and CSV reports, and fixed-length file reading |
 
-### NuvTools.AspNetCore.EntityFramework
-EntityFramework Core helper library to use with ASP.NET Aplications.
+The full list, one row per package with its NuGet link, is in the
+**[package catalog](https://github.com/nuvtools/.github/blob/main/profile/PACKAGES.md)**.
 
-### NuvTools.Notification.Mail
-Use the NuvTools.Notification.Mail library and the NuvTools.Notification.Mail.Smtp as infrastructure.
+### How the areas depend on each other
 
-### NuvTools.Report
-Report base library to support PDF and Sheet infrastructure libraries.
+An arrow means "uses". The four areas in the box stand alone: they depend on no other Nuv Tools
+package.
 
-### NuvTools.Report.Sheet
-Helper report library to work with Excel/CSV.
+```mermaid
+flowchart BT
+    common[Common]
+    resources[Resources]
+    validation[Validation]
+    data[Data]
+    aspnetcore[AspNetCore]
+    security[Security]
+    identity[Security.Identity]
+    payment[Payment]
 
-### NuvTools.Report.Pdf
-Helper report library to work with PDF.
+    subgraph standalone[Stand-alone]
+        direction LR
+        notification[Notification]
+        storage[Storage]
+        blockchain[Blockchain]
+        report[Report]
+    end
 
-### NuvTools.Security.Models Library
-Contains models to be used by security modules.
+    data --> common
+    payment --> common
+    aspnetcore --> common
+    aspnetcore --> data
+    security --> common
+    security --> validation
+    security --> aspnetcore
+    identity --> security
+    identity --> data
+    identity --> resources
+    identity --> validation
+```
 
-### NuvTools.Security.AspNetCore Library
-Common library for security purposes in ASP.NET Core.
+The package-level picture, and the contract-and-provider pattern the integration packages follow,
+are in **[architecture](https://github.com/nuvtools/.github/blob/main/profile/ARCHITECTURE.md)**.
 
-### NuvTools.Security Library
-Common library for security purposes.
+### Getting started
 
-### NuvTools.Security.Identity.Models
-Contains models to be used with ASP.NET Identity modules.
+Install the packages you need from NuGet:
 
-### NuvTools.Security.Identity.AspNetCore
-Library to use with ASP.NET Identity modules on server-side.
+```bash
+dotnet add package NuvTools.Common
+dotnet add package NuvTools.Data.EntityFrameworkCore.SqlServer
+```
 
-### NuvTools.Security.Identity
-Helper library to be used with ASP.NET Identity.
+Each repository's README covers its own packages, and the framework documentation is at
+[docs.nuvtools.com](https://docs.nuvtools.com).
 
-### NuvTools.Storage
-Contains base and helper classes to manipulate storages such as Microsoft Azure Storage.
+## Azure templates
 
-### NuvTools.Storage.Azure
-Contains helper classes to manipulate Microsoft Azure Storage.
+| Repository | What it is |
+|---|---|
+| [nuvtools-templates-azure-iac](https://github.com/nuvtools/nuvtools-templates-azure-iac) | Modular Bicep templates for provisioning Azure infrastructure, with a configurable naming convention based on the Cloud Adoption Framework |
+| [nuvtools-templates-azure-cicd](https://github.com/nuvtools/nuvtools-templates-azure-cicd) | Reusable GitHub Actions workflows and composite actions for deploying .NET applications to Azure (AKS and App Service) |
 
-### Nuv Tools Validation Library
-Validation library for Web, Desktop and Mobile (MAUI) applications.
+The two are meant to be used together: the Bicep modules create the environment, and the workflows
+build the application and deploy into it.
+
+```mermaid
+flowchart LR
+    repo[Your repository] --> iac["nuvtools-templates-azure-iac<br/>Bicep modules"]
+    repo --> cicd["nuvtools-templates-azure-cicd<br/>build and deploy workflows"]
+    iac -->|provisions| azure[(Azure environment)]
+    cicd -->|deploys to| azure
+```
+
+## Data Provider SDK
+
+[nuvtools-dataprovider-sdk](https://github.com/nuvtools/nuvtools-dataprovider-sdk) holds the .NET
+libraries for the [Nuv Tools Data Provider](https://dataprovider.nuvtools.com) marketplace — what
+somebody outside the platform installs to work with it. Today that is
+[`NuvTools.DataProvider.Client`](https://www.nuget.org/packages/NuvTools.DataProvider.Client), the
+consumer SDK for calling an API published there.
+
+## Other repositories
+
+| Repository | What it is |
+|---|---|
+| [nuvtools-docs](https://github.com/nuvtools/nuvtools-docs) | Source of [docs.nuvtools.com](https://docs.nuvtools.com) |
+| [nuvtools-payment-for-java](https://github.com/nuvtools/nuvtools-payment-for-java) | Java payment abstraction library; last updated in 2023 |
+
+## Contributing
+
+Issues and pull requests are welcome in the repository of the package they concern. For anything
+that does not fit one repository, write to [technology@nuvtools.com](mailto:technology@nuvtools.com).
