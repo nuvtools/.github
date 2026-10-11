@@ -38,82 +38,58 @@ stores a file does not move.
 
 ## Dependencies between packages
 
-Only the references that cross from one package to another are drawn; an arrow means "references".
-References to `NuvTools.Common` are listed under the diagram instead of drawn, because nearly
-everything has one and the arrows would bury the rest.
+One diagram per group of areas, so each stays readable. An arrow means "references", and the
+`NuvTools.` prefix is left off the names. Two things are not drawn:
 
-Packages that reference no other Nuv Tools package and are referenced by none — the notification,
-storage, blockchain and report families — are left out, since within each of them the only
-references are from a provider to its contract.
+- References to `NuvTools.Common`, listed at the end of this section: nearly everything has one and
+  the arrows would bury the rest.
+- The notification, storage, blockchain and report families, which reference no other Nuv Tools
+  package and are referenced by none. Within each, the only references are from a provider to its
+  contract.
+
+### Data and Web
 
 ```mermaid
 flowchart BT
-    subgraph foundation[Foundation]
-        Common[NuvTools.Common]
-        Resources[NuvTools.Resources]
-        Validation[NuvTools.Validation]
-    end
+    DataEF[Data.EntityFrameworkCore] --> Data[Data]
+    DataSql[Data.EntityFrameworkCore.SqlServer] --> DataEF
+    DataPg[Data.EntityFrameworkCore.PostgreSQL] --> DataEF
 
-    subgraph data[Data]
-        Data[NuvTools.Data]
-        DataEF[NuvTools.Data.EntityFrameworkCore]
-        DataSql["NuvTools.Data.EntityFrameworkCore.SqlServer"]
-        DataPg["NuvTools.Data.EntityFrameworkCore.PostgreSQL"]
-    end
-
-    subgraph web[Web]
-        Asp[NuvTools.AspNetCore]
-        AspEF[NuvTools.AspNetCore.EntityFrameworkCore]
-        Blazor[NuvTools.AspNetCore.Blazor]
-        Mud[NuvTools.AspNetCore.Blazor.MudBlazor]
-    end
-
-    subgraph security[Security]
-        Sec[NuvTools.Security]
-        SecAsp[NuvTools.Security.AspNetCore]
-        SecBlazor[NuvTools.Security.AspNetCore.Blazor]
-        Serpro[NuvTools.Security.Biometrics.Serpro]
-        Lacuna[NuvTools.Security.Certificate.Lacuna]
-    end
-
-    subgraph identity[Security.Identity]
-        Id[NuvTools.Security.Identity]
-        IdModels[NuvTools.Security.Identity.Models]
-        IdAsp[NuvTools.Security.Identity.AspNetCore]
-        IdEF[NuvTools.Security.Identity.EntityFrameworkCore]
-    end
-
-    subgraph payment[Payment]
-        Pay[NuvTools.Payment]
-        Stripe[NuvTools.Payment.Stripe.ApiClient]
-        Omie[NuvTools.Payment.Omie.ApiClient]
-    end
-
-    DataEF --> Data
-    DataSql --> DataEF
-    DataPg --> DataEF
-
-    AspEF --> Asp
+    AspEF[AspNetCore.EntityFrameworkCore] --> Asp[AspNetCore]
     AspEF --> DataEF
-    Mud --> Blazor
+    Mud[AspNetCore.Blazor.MudBlazor] --> Blazor[AspNetCore.Blazor]
     Mud --> Data
-
-    SecAsp --> Sec
-    SecBlazor --> Sec
-    SecBlazor --> Blazor
-    Serpro --> Sec
-    Serpro --> Validation
-    Lacuna --> Sec
-
-    Id --> Sec
-    IdModels --> Resources
-    IdModels --> Validation
-    IdAsp --> Sec
-    IdAsp --> IdModels
-    IdEF --> DataEF
-
-    Stripe --> Pay
 ```
+
+### Security and Identity
+
+```mermaid
+flowchart BT
+    SecAsp[Security.AspNetCore] --> Sec[Security]
+    SecBlazor[Security.AspNetCore.Blazor] --> Sec
+    SecBlazor --> Blazor[AspNetCore.Blazor]
+    Serpro[Security.Biometrics.Serpro] --> Sec
+    Serpro --> Validation[Validation]
+    Lacuna[Security.Certificate.Lacuna] --> Sec
+
+    Id[Security.Identity] --> Sec
+    IdAsp[Security.Identity.AspNetCore] --> Sec
+    IdAsp --> IdModels[Security.Identity.Models]
+    IdModels --> Validation
+    IdModels --> Resources[Resources]
+    IdEF[Security.Identity.EntityFrameworkCore] --> DataEF[Data.EntityFrameworkCore]
+```
+
+### Payment
+
+```mermaid
+flowchart BT
+    Stripe[Payment.Stripe.ApiClient] --> Pay[Payment]
+    Omie[Payment.Omie.ApiClient]
+```
+
+`Payment.Omie.ApiClient` is a client for the Omie ERP and does not reference the `Payment`
+contracts.
 
 **Reference `NuvTools.Common`:** `NuvTools.Data.EntityFrameworkCore`,
 `NuvTools.AspNetCore.Blazor.MudBlazor`, `NuvTools.Security.AspNetCore`,
