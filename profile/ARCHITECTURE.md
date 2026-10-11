@@ -39,6 +39,9 @@ stores a file does not move.
 ## Dependencies between packages
 
 Only the references that cross from one package to another are drawn; an arrow means "references".
+References to `NuvTools.Common` are listed under the diagram instead of drawn, because nearly
+everything has one and the arrows would bury the rest.
+
 Packages that reference no other Nuv Tools package and are referenced by none — the notification,
 storage, blockchain and report families — are left out, since within each of them the only
 references are from a provider to its contract.
@@ -87,7 +90,6 @@ flowchart BT
     end
 
     DataEF --> Data
-    DataEF --> Common
     DataSql --> DataEF
     DataPg --> DataEF
 
@@ -95,35 +97,30 @@ flowchart BT
     AspEF --> DataEF
     Mud --> Blazor
     Mud --> Data
-    Mud --> Common
 
     SecAsp --> Sec
-    SecAsp --> Common
     SecBlazor --> Sec
     SecBlazor --> Blazor
-    SecBlazor --> Common
     Serpro --> Sec
     Serpro --> Validation
-    Serpro --> Common
     Lacuna --> Sec
-    Lacuna --> Common
 
     Id --> Sec
     IdModels --> Resources
     IdModels --> Validation
     IdAsp --> Sec
     IdAsp --> IdModels
-    IdAsp --> Common
     IdEF --> DataEF
 
-    Pay --> Common
     Stripe --> Pay
-    Stripe --> Common
-    Omie --> Common
 ```
 
-`NuvTools.DataProvider.Client`, in its own repository, references `NuvTools.Common` and nothing
-else.
+**Reference `NuvTools.Common`:** `NuvTools.Data.EntityFrameworkCore`,
+`NuvTools.AspNetCore.Blazor.MudBlazor`, `NuvTools.Security.AspNetCore`,
+`NuvTools.Security.AspNetCore.Blazor`, `NuvTools.Security.Biometrics.Serpro`,
+`NuvTools.Security.Certificate.Lacuna`, `NuvTools.Security.Identity.AspNetCore`, `NuvTools.Payment`,
+`NuvTools.Payment.Stripe.ApiClient`, `NuvTools.Payment.Omie.ApiClient` and, in its own repository,
+`NuvTools.DataProvider.Client`, which references nothing else.
 
 ## Where each package belongs in an application
 
