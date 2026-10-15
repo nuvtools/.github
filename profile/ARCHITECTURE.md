@@ -38,7 +38,7 @@ stores a file does not move.
 
 ## Dependencies between packages
 
-One diagram per group of areas, so each stays readable. An arrow means "references", and the
+One diagram per area, so each stays readable. An arrow means "references", and the
 `NuvTools.` prefix is left off the names. Two things are not drawn:
 
 - References to `NuvTools.Common`, listed at the end of this section: nearly everything has one and
@@ -61,21 +61,26 @@ flowchart BT
     Mud --> Data
 ```
 
-### Security and Identity
+### Security
 
 ```mermaid
-flowchart BT
+flowchart LR
     SecAsp[Security.AspNetCore] --> Sec[Security]
     SecBlazor[Security.AspNetCore.Blazor] --> Sec
     SecBlazor --> Blazor[AspNetCore.Blazor]
     Serpro[Security.Biometrics.Serpro] --> Sec
     Serpro --> Validation[Validation]
     Lacuna[Security.Certificate.Lacuna] --> Sec
+```
 
-    Id[Security.Identity] --> Sec
+### Security.Identity
+
+```mermaid
+flowchart LR
+    Id[Security.Identity] --> Sec[Security]
     IdAsp[Security.Identity.AspNetCore] --> Sec
     IdAsp --> IdModels[Security.Identity.Models]
-    IdModels --> Validation
+    IdModels --> Validation[Validation]
     IdModels --> Resources[Resources]
     IdEF[Security.Identity.EntityFrameworkCore] --> DataEF[Data.EntityFrameworkCore]
 ```
